@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏥 康复培训 · 学术会议信息面板 | 无锡周边</title>
+<style>
+  :root {
+    --bg: #f0f2f5; --card: #fff; --text: #1e293b; --text2: #64748b; --border: #e2e8f0;
+    --accent: #3b82f6; --accent-dark: #1d4ed8; --accent2: #0d9488;
+    --tag-blue: #dbeafe; --tag-blue-text: #1e40af;
+    --tag-green: #d1fae5; --tag-green-text: #065f46;
+    --tag-orange: #ffedd5; --tag-orange-text: #9a3412;
+    --tag-purple: #ede9fe; --tag-purple-text: #5b21b6;
+    --tag-red: #fee2e2; --tag-red-text: #991b1b;
+    --tag-teal: #ccfbf1; --tag-teal-text: #115e59;
+    --radius: 14px; --shadow-sm: 0 1px 2px rgba(0,0,0,.04);
+    --shadow: 0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,.12);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; background:var(--bg); color:var(--text); line-height:1.65; }
+  .container { max-width:1200px; margin:0 auto; padding:24px 20px 80px; }
+
+  /* ---- Header ---- */
+  header { text-align:center; padding:36px 0 28px; position:relative; }
+  header::after { content:''; display:block; width:60px; height:4px; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; margin:16px auto 0; }
+  header h1 { font-size:2.1rem; font-weight:800; margin-bottom:6px; letter-spacing:-.02em; }
+  header p { color:var(--text2); font-size:.92rem; }
+  .update-time { display:inline-flex; align-items:center; gap:6px; background:#fff; color:var(--text2); font-size:.78rem; padding:6px 16px; border-radius:24px; margin-top:10px; box-shadow:var(--shadow-sm); border:1px solid var(--border); }
+  .update-time .pulse-dot { width:8px; height:8px; border-radius:50%; background:#10b981; animation:pulse 2s ease-in-out infinite; }
+
+  /* ---- Stat Bar ---- */
+  .summary-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; }
+  .stat { flex:1 1 110px; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px 16px; text-align:center; cursor:pointer; transition:all .2s; border:2px solid transparent; user-select:none; }
+  .stat:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:var(--shadow-md); }
+  .stat.active { border-color:var(--accent); background:#eff6ff; }
+  .stat .num { font-size:2rem; font-weight:800; color:var(--accent); letter-spacing:-.03em; }
+  .stat .label { font-size:.78rem; color:var(--text2); margin-top:4px; }
+
+  /* ---- Filter Bar ---- */
+  .filter-bar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:20px; padding:14px 18px; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); }
+  .filter-bar .f-label { font-size:.82rem; font-weight:700; color:var(--text2); margin-right:4px; white-space:nowrap; }
+  .filter-bar .f-btn { font-size:.76rem; padding:5px 14px; border-radius:20px; border:1.5px solid var(--border); background:#fff; color:var(--text); cursor:pointer; transition:all .15s; white-space:nowrap; font-family:inherit; }
+  .filter-bar .f-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .filter-bar .f-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600; }
+  .filter-bar .f-search { flex:1 1 160px; min-width:120px; padding:6px 12px; border:1.5px solid var(--border); border-radius:20px; font-size:.8rem; outline:none; font-family:inherit; }
+  .filter-bar .f-search:focus { border-color:var(--accent); }
+  .filter-bar .f-count { font-size:.75rem; color:var(--text2); white-space:nowrap; }
+
+  /* ---- Sections ---- */
+  section { margin-bottom:40px; scroll-margin-top:60px; }
+  section h2 { font-size:1.2rem; font-weight:700; margin-bottom:16px; padding-bottom:10px; border-bottom:2px solid var(--accent); display:flex; align-items:center; gap:8px; }
+  section h2 .sec-badge { font-size:.73rem; padding:2px 10px; border-radius:12px; font-weight:600; }
+  section h2 .sec-count { font-size:.78rem; color:var(--text2); font-weight:400; margin-left:auto; }
+
+  /* ---- Cards ---- */
+  .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px 20px; margin-bottom:10px; border-left:4px solid var(--accent); transition:all .2s; position:relative; }
+  .card:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); }
+  .card.free { border-left-color:#10b981; }
+  .card.cheap { border-left-color:#22c55e; }
+  .card.urgent { border-left-color:#ef4444; }
+  .card.online { border-left-color:#8b5cf6; }
+  .card.hidden { display:none; }
+  .card h3 { font-size:1rem; font-weight:600; margin-bottom:6px; display:flex; align-items:flex-start; gap:6px; flex-wrap:wrap; }
+  .card .meta { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:6px; }
+  .card .meta span { font-size:.82rem; color:var(--text2); }
+  .card .new-badge { display:inline-block; font-size:.68rem; padding:1px 7px; border-radius:6px; background:#dbeafe; color:#1e40af; font-weight:700; animation:pulse 2s ease-in-out infinite; }
+
+  /* ---- Tags ---- */
+  .tag { display:inline-block; font-size:.72rem; padding:2px 10px; border-radius:12px; font-weight:500; }
+  .tag.blue{background:var(--tag-blue);color:var(--tag-blue-text)} .tag.green{background:var(--tag-green);color:var(--tag-green-text)}
+  .tag.orange{background:var(--tag-orange);color:var(--tag-orange-text)} .tag.purple{background:var(--tag-purple);color:var(--tag-purple-text)}
+  .tag.red{background:var(--tag-red);color:var(--tag-red-text)} .tag.teal{background:var(--tag-teal);color:var(--tag-teal-text)}
+  .price-tag{display:inline-block;font-size:.72rem;padding:2px 10px;border-radius:4px;font-weight:700;}
+  .price-free{background:#d1fae5;color:#065f46} .price-low{background:#dbeafe;color:#1e40af}
+  .price-mid{background:#ffedd5;color:#9a3412} .price-high{background:#fee2e2;color:#991b1b}
+  .city-tag{display:inline-block;font-size:.72rem;padding:2px 10px;border-radius:4px;font-weight:600;}
+  .city-sh{background:#fee2e2;color:#991b1b} .city-nj{background:#fef3c7;color:#92400e}
+  .city-hz{background:#dbeafe;color:#1e40af} .city-sz{background:#d1fae5;color:#065f46}
+  .city-wx{background:#ede9fe;color:#5b21b6} .city-nb{background:#e0e7ff;color:#3730a3}
+  .city-other{background:#f3f4f6;color:#374151}
+
+  .detail-list{margin:6px 0 0 16px;font-size:.82rem;color:var(--text2);}
+  .detail-list li{margin-bottom:3px;}
+  .source-link{color:var(--accent2);font-size:.78rem;text-decoration:none;margin-top:6px;display:inline-block;font-weight:500;}
+  .source-link:hover{text-decoration:underline;}
+
+  /* ---- 今日新增速览 ---- */
+  .today-new{background:linear-gradient(135deg,#eff6ff,#ddd6fe);border:1.5px solid #a5b4fc;border-radius:var(--radius);padding:18px 22px;margin-bottom:24px;}
+  .today-new-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .today-new-header h3{font-size:1rem;font-weight:700;color:#3730a3;}
+  .today-new .new-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;}
+  .today-new .new-item{background:var(--card);border-radius:10px;padding:10px 14px;font-size:.83rem;display:flex;align-items:center;gap:8px;box-shadow:var(--shadow-sm);cursor:pointer;transition:all .15s;}
+  .today-new .new-item:hover{box-shadow:var(--shadow-md);transform:translateX(2px);}
+  .today-new .new-item .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .today-new .new-item .dot.conf{background:#2563eb} .today-new .new-item .dot.free-dot{background:#10b981}
+  .today-new .new-item .dot.online-dot{background:#8b5cf6} .today-new .new-item .dot.hosp-dot{background:#f59e0b}
+  .today-new .new-stats{display:flex;gap:16px;font-size:.78rem;color:var(--text2);margin-top:10px;}
+
+  /* ---- 紧急提醒 ---- */
+  .tips-box{background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:var(--radius);padding:18px 22px;margin-bottom:20px;border:1.5px solid #fcd34d;}
+  .tips-box h3{font-size:.92rem;font-weight:700;margin-bottom:10px;}
+  .tips-box .deadline-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.06);font-size:.84rem;}
+  .tips-box .deadline-item:last-child{border-bottom:none;}
+  .tips-box .deadline-item .dl-date{font-weight:700;white-space:nowrap;min-width:70px;}
+  .tips-box .deadline-item .dl-name{flex:1;}
+  .tips-box .deadline-item .dl-countdown{flex-shrink:0;}
+  .tips-box .deadline-item.expired-dl{opacity:.5;}
+  .tips-box .deadline-item.expired-dl .dl-name{text-decoration:line-through;}
+
+  /* ---- 倒计时 ---- */
+  .countdown{display:inline-block;font-size:.72rem;padding:2px 10px;border-radius:12px;font-weight:700;white-space:nowrap;}
+  .countdown.urgent{background:#fee2e2;color:#991b1b;animation:pulse 1.5s ease-in-out infinite;}
+  .countdown.warn{background:#ffedd5;color:#9a3412;}
+  .countdown.safe{background:#d1fae5;color:#065f46;}
+  .countdown.today{background:#dbeafe;color:#1e40af;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+  /* ---- Grids ---- */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+  /* ---- Nav ---- */
+  .nav-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;position:sticky;top:10px;z-index:100;background:rgba(240,242,245,.85);backdrop-filter:blur(10px);padding:8px 12px;border-radius:var(--radius);box-shadow:var(--shadow);}
+  .nav-bar a{font-size:.8rem;padding:6px 14px;border-radius:20px;background:var(--card);box-shadow:var(--shadow-sm);text-decoration:none;color:var(--text);white-space:nowrap;transition:all .15s;font-weight:500;}
+  .nav-bar a:hover,.nav-bar a:focus{background:var(--accent);color:#fff;box-shadow:var(--shadow-md);}
+
+  /* ---- Tables ---- */
+  table.data{width:100%;border-collapse:collapse;font-size:.83rem;}
+  table.data th{text-align:left;padding:8px 8px;border-bottom:2px solid var(--border);font-size:.76rem;color:var(--text2);white-space:nowrap;font-weight:600;}
+  table.data td{padding:8px 8px;border-bottom:1px solid var(--border);}
+  table.data tr:hover td{background:#f8fafc;}
+
+  /* ---- Back to top ---- */
+  .back-top{position:fixed;bottom:28px;right:28px;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;font-size:1.3rem;border:none;cursor:pointer;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(20px);transition:all .3s;z-index:200;display:flex;align-items:center;justify-content:center;}
+  .back-top.visible{opacity:1;transform:translateY(0);}
+  .back-top:hover{background:var(--accent-dark);transform:translateY(-3px);}
+
+  /* ---- Empty state ---- */
+  .empty-state{text-align:center;color:var(--text2);padding:20px;font-size:.88rem;display:none;}
+  .empty-state.show{display:block;}
+
+  /* ---- Footer ---- */
+  footer{text-align:center;color:var(--text2);font-size:.76rem;padding:24px 0;border-top:1px solid var(--border);margin-top:48px;}
+
+  @media (max-width:768px){
+    .grid-2,.grid-3{grid-template-columns:1fr;}
+    .container{padding:12px;}
+    header h1{font-size:1.4rem;}
+    .card{padding:14px 16px;}
+    table.data{font-size:.74rem;}
+    .today-new .new-grid{grid-template-columns:1fr;}
+    .filter-bar{gap:6px;}
+    .nav-bar{top:4px;padding:6px 8px;}
+    .nav-bar a{font-size:.74rem;padding:5px 10px;}
+    .back-top{bottom:16px;right:16px;width:38px;height:38px;}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>🏥 康复治疗培训 · 学术会议信息面板</h1>
+  <p>覆盖：无锡 · 上海 · 南京 · 杭州 · 苏州 · 常州 · 宁波 · 南通 · 金华 · 扬州 · 镇江</p>
+  <div class="update-time"><span class="pulse-dot"></span> 最后更新：2026年8月7日 | 每日自动更新 · 今日新增16个活动</div>
+</header>
+
+<!-- ===== 快速导航 ===== -->
+<div class="nav-bar">
+  <a href="#today-new">🆕 今日新增</a>
+  <a href="#urgent">⚡ 紧急提醒</a>
+  <a href="#free">🆓 免费资源</a>
+  <a href="#wuxi">🏠 无锡本地</a>
+  <a href="#august">📅 8月活动</a>
+  <a href="#sept-nov">🗓 9-11月长三角</a>
+  <a href="#all-year">📋 全年会议日历</a>
+  <a href="#training">🎓 进修机会</a>
+  <a href="#online">💻 线上学习</a>
+  <a href="#credit">📜 继续教育学分</a>
+  <a href="#links">🔖 信息渠道</a>
+</div>
+
+<div class="summary-bar">
+  <div class="stat" data-filter="all"><div class="num">80+</div><div class="label">📅 8-12月活动</div></div>
+  <div class="stat" data-filter="training"><div class="num">19+</div><div class="label">🏥 进修基地</div></div>
+  <div class="stat" data-filter="free"><div class="num">12</div><div class="label">🆓 免费平台</div></div>
+  <div class="stat" data-filter="city"><div class="num">9</div><div class="label">🌐 覆盖城市</div></div>
+  <div class="stat" data-filter="price"><div class="num">💰</div><div class="label">多档价位</div></div>
+</div>
+
+<!-- ===== 筛选栏 ===== -->
+<div class="filter-bar">
+  <span class="f-label">🔍 筛选：</span>
+  <button class="f-btn active" data-city="all">全部城市</button>
+  <button class="f-btn" data-city="sh">上海</button>
+  <button class="f-btn" data-city="nj">南京</button>
+  <button class="f-btn" data-city="hz">杭州</button>
+  <button class="f-btn" data-city="sz">苏州</button>
+  <button class="f-btn" data-city="wx">无锡</button>
+  <button class="f-btn" data-city="nb">宁波</button>
+  <button class="f-btn" data-city="jh">金华</button>
+  <span style="margin-left:8px;" class="f-label">|</span>
+  <button class="f-btn active" data-price="all">全部价位</button>
+  <button class="f-btn" data-price="free">免费</button>
+  <button class="f-btn" data-price="low">≤1000元</button>
+  <button class="f-btn" data-price="mid">1000-3000元</button>
+  <button class="f-btn" data-price="high">&gt;3000元</button>
+  <input class="f-search" type="text" placeholder="搜索活动名称..." oninput="searchEvents(this.value)">
+  <span class="f-count" id="filter-count"></span>
+</div>
+
+<!-- ===== 今日新增速览 ===== -->
+<section id="today-new">
+  <div class="today-new">
+    <div class="today-new-header">
+      <h3>🆕 今日新增活动（8月7日搜索发现）</h3>
+      <span class="tag green">16个新发现</span>
+    </div>
+    <div class="new-grid">
+      <div class="new-item"><span class="dot conf"></span><span>老年护理康复护理学术会议</span><span class="city-tag city-nj">南京</span><span>8/26-28</span></div>
+      <div class="new-item"><span class="dot conf"></span><span>吞咽障碍病例展示（华东区选拔）</span><span class="city-tag city-sz">苏州</span><span>8/21</span></div>
+      <div class="new-item"><span class="dot conf"></span><span>第三期非侵入性脑机接口操作培训</span><span class="city-tag city-sh">上海</span><span>9/11-13</span></div>
+      <div class="new-item"><span class="dot hosp-dot"></span><span>上海市第七人民医院康复临床医学中心进修</span><span class="city-tag city-sh">上海</span></div>
+      <div class="new-item"><span class="dot hosp-dot"></span><span>上海市第七人民医院重症康复病房进修</span><span class="city-tag city-sh">上海</span></div>
+      <div class="new-item"><span class="dot hosp-dot"></span><span>上海市养志康复医院（阳光康复中心）进修</span><span class="city-tag city-sh">上海</span></div>
+      <div class="new-item"><span class="dot hosp-dot"></span><span>杭州市中医院针灸康复科进修</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="new-item"><span class="dot hosp-dot"></span><span>浙大邵逸夫医院康复专科护士实践基地</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="new-item"><span class="dot free-dot"></span><span>上海失智老人家庭照护实训班</span><span class="city-tag city-sh">上海</span><span class="tag green">免费</span></div>
+      <div class="new-item"><span class="dot free-dot"></span><span>上海甘泉/长风"老吾老计划"</span><span class="city-tag city-sh">上海</span><span class="tag green">免费</span></div>
+      <div class="new-item"><span class="dot online-dot"></span><span>学银在线《康复技能综合实践》</span><span class="tag purple">线上</span></div>
+      <div class="new-item"><span class="dot online-dot"></span><span>中国大学MOOC《康复评定学》</span><span class="tag purple">线上</span></div>
+      <div class="new-item"><span class="dot online-dot"></span><span>传统康复方法学（国家智慧教育平台）</span><span class="tag purple">线上</span></div>
+      <div class="new-item"><span class="dot online-dot"></span><span>学堂在线《康复医学》（华中科技大学）</span><span class="tag purple">线上</span></div>
+      <div class="new-item"><span class="dot online-dot"></span><span>北大康复理疗指导技能提升研修班</span><span>10月/12月</span></div>
+    </div>
+    <div class="new-stats">
+      <span>📋 3场学术会议/培训</span><span>🏥 5个进修基地</span><span>🆓 2项免费社区培训</span><span>💻 5个线上课程</span><span>🎓 1个研修班</span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 1. 紧急提醒（动态倒计时） ==================== -->
+<section id="urgent">
+  <div class="tips-box">
+    <h3>⚡ 近期报名截止提醒（自动计算倒计时）</h3>
+    <div id="deadline-list">
+      <!-- JS动态生成 -->
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 2. 免费资源 ==================== -->
+<section id="free">
+  <h2>🆓 完全免费的学习资源</h2>
+  <div class="grid-2">
+    <div class="card free">
+      <h3>📱 华夏云课堂（App）</h3>
+      <div class="meta"><span class="price-tag price-free">完全免费</span><span class="tag teal">中国残疾人康复协会支持</span></div>
+      <ul class="detail-list">
+        <li>孤独症康复教育上岗培训、VB-MAPP评估培训</li>
+        <li>智力障碍、视力残疾、肢体残疾等儿童康复课程</li>
+        <li>BCBA级专家翻译"孤独症之声"工具包（免费）</li>
+        <li>支持在线做题、查询康复定点机构</li>
+        <li>安卓/iOS均可下载</li>
+      </ul>
+    </div>
+    <div class="card free">
+      <h3>📺 B站（bilibili）免费课程</h3>
+      <div class="meta"><span class="price-tag price-free">完全免费</span><span class="tag teal">海量内容</span></div>
+      <ul class="detail-list">
+        <li>2026康复治疗技术（士/师/中级）考试全套视频</li>
+        <li>康复医学治疗技术副高考点精讲课</li>
+        <li>腱鞘炎康复、运动康复等实操视频</li>
+        <li>搜索"康复治疗 2026"即可找到大量课程</li>
+      </ul>
+    </div>
+    <div class="card free">
+      <h3>📱 华励康复教育（App）</h3>
+      <div class="meta"><span class="price-tag price-free">免费使用</span><span class="tag teal">10万+会员</span></div>
+      <ul class="detail-list">
+        <li>免费线上题库</li>
+        <li>免费线上视频课程</li>
+        <li>康复士/师/主管技师考试备考</li>
+        <li>安卓应用市场可下载</li>
+      </ul>
+    </div>
+    <div class="card free">
+      <h3>🌐 Coursera 国际课程</h3>
+      <div class="meta"><span class="price-tag price-free">免费旁听</span><span class="tag teal">国际视野</span></div>
+      <ul class="detail-list">
+        <li>物理治疗相关课程（解剖学、生物力学等）</li>
+        <li>选择"旁听"模式即可免费学习全部内容</li>
+        <li>付费证书可选（不需要证书就完全免费）</li>
+        <li>coursera.org 搜索 "physical therapy"</li>
+      </ul>
+    </div>
+    <div class="card free">
+      <h3>🆕 康复辅助技术咨询师免费培训（上海）</h3>
+      <div class="meta"><span class="price-tag price-free">1000个免费名额</span><span class="tag green">8月起·先到先得</span><span class="city-tag city-sh">上海</span></div>
+      <ul class="detail-list">
+        <li>上海市民政局委托，已纳入《上海市急需紧缺高技能人才目录》</li>
+        <li>面向康复辅具从业人员、康复技师、护士、医师等</li>
+        <li>考核费：五级485元/四级560元（可申领技能提升补贴）</li>
+        <li>📞 培训报名：18964499596 | 考核：021-62090010（王老师）</li>
+      </ul>
+    </div>
+    <div class="card free">
+      <h3>🆕 国家高等教育智慧教育平台《康复医学》</h3>
+      <div class="meta"><span class="price-tag price-free">免费</span><span class="tag purple">线上</span><span class="tag teal">国家级一流课程</span></div>
+      <ul class="detail-list">
+        <li>8周线上教学，涵盖PT/OT/ST全模块</li>
+        <li>动画+实景教学，CBL/TBL教学法</li>
+        <li>higher.smartedu.cn 直接访问</li>
+      </ul>
+    </div>
+    <div class="card free">
+      <h3>🆕 智慧树《神经系统疾病的康复》</h3>
+      <div class="meta"><span class="price-tag price-free">免费</span><span class="tag purple">线上</span><span class="tag teal">对公众开放</span></div>
+      <ul class="detail-list">
+        <li>涵盖运动疗法、作业疗法、物理因子、言语治疗</li>
+        <li>针对偏瘫、失语、失用等康复训练</li>
+        <li>zhihuishu.com 搜索课程名</li>
+      </ul>
+    </div>
+    <div class="card free">
+      <h3>🆕 上海失智老人家庭照护实训班（莘庄·古美·江川）</h3>
+      <div class="meta"><span class="price-tag price-free">完全免费</span><span class="tag green">赠送照护礼包</span><span class="city-tag city-sh">上海</span></div>
+      <ul class="detail-list">
+        <li>照护技巧、沟通方法、居家安全、照护者心理支持</li>
+        <li>赠送药盒、防滑袜等实用礼包，名额报满即止</li>
+        <li>📍 上海闵行区三个街道同步开展</li>
+      </ul>
+    </div>
+    <div class="card free">
+      <h3>🆕 上海甘泉/长风"老吾老计划"——免费照护培训</h3>
+      <div class="meta"><span class="price-tag price-free">完全免费</span><span class="tag green">含入户指导</span><span class="city-tag city-sh">上海</span></div>
+      <ul class="detail-list">
+        <li>失能失智老人照护技能、常见病护理、用药安全、康复技巧</li>
+        <li>健康管理、心理辅导，部分提供一对一入户指导（30户）</li>
+        <li>📞 甘泉 021-56526932 | 长风 18048451229</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 3. 无锡本地 ==================== -->
+<section id="wuxi">
+  <h2>🏠 无锡本地 · 家门口的机会</h2>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>无锡国济康复医院 · 2026年院内活动</h3>
+      <span class="city-tag city-wx">无锡</span>
+    </div>
+    <div class="meta"><span>📍 梁溪区江海东路12号</span><span>📞 0510-83072588</span></div>
+    <ul class="detail-list">
+      <li>定期举办院内技能培训（围绕集团"三年服务内涵行动"）</li>
+      <li>2026年4月："科学防控肿瘤，筑牢健康防线"专题讲座</li>
+      <li>2026年4月：世界帕金森病日——"科技赋能，智护全程"主题活动</li>
+      <li>2026年3月："学雷锋日"大型义诊 + 健康宣教</li>
+      <li>儿童康复科不定期走进幼儿园开展专项评估与指导</li>
+      <li>已开设首期医疗护理员培训班</li>
+      <li>参与2026中国康复医学会老年康复学术年会（常州，5月）</li>
+      <li>💡 <strong>建议直接致电咨询院内培训排期，可能有面向外部治疗师的免费讲座</strong></li>
+    </ul>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>无锡顾连医院 · 首期医疗专项培训班</h3>
+      <span class="city-tag city-wx">无锡</span>
+    </div>
+    <div class="meta"><span>📅 2026年4月已举办首期</span><span>📍 无锡</span></div>
+    <ul class="detail-list">
+      <li>特邀无锡公立医院康复领域专家授课</li>
+      <li>涵盖康复科室管理、核心治疗技术、诊疗规范</li>
+      <li>理论精讲 + 案例分析 + 互动研讨</li>
+      <li>💡 可能后续有更多期次，建议关注医院公众号</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>无锡市同仁康复医院</h3>
+      <span class="city-tag city-wx">无锡</span>
+    </div>
+    <div class="meta"><span>🏥 江苏省康复治疗师培训教学基地</span><span>📍 无锡</span></div>
+    <ul class="detail-list">
+      <li>设有完整 PT、OT、ST、水疗、职业康复科室</li>
+      <li>承担多所高校实习带教任务</li>
+      <li>💡 直接联系康复科咨询对外培训/进修名额</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== 4. 8月活动（全部，含小型） ==================== -->
+<section id="august">
+  <h2>📅 2026年8月 · 长三角培训/会议完整清单</h2>
+
+  <div class="card urgent">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>2026中国康复医学会康复治疗专业委员会学术年会 ⭐年度最大</h3>
+      <span class="city-tag city-hz">杭州</span>
+    </div>
+    <div class="meta">
+      <span>📅 8/13—16</span><span>📍 杭州白金汉爵大酒店</span>
+      <span class="price-tag price-mid">1200元（会员1000/学生500）</span>
+      <span class="tag orange">早鸟1000截止7/31</span>
+    </div>
+    <ul class="detail-list">
+      <li>主论坛×2 + 分论坛×13 + 会前学习班×2</li>
+      <li>SMART技术培训班、儿童吞咽障碍学习班</li>
+      <li>第六届"科学杯"病例/科普展示及论文交流</li>
+      <li>承办：浙江省人民医院 | 主题：数智融合·重构康复新生态</li>
+    </ul>
+    <a class="source-link" href="https://www.carm.org.cn/kyxs/tzgg/art/2026/art_e88a5cdef90f46e79ec257e6d3201ac6.html" target="_blank">🔗 第二轮通知</a>
+  </div>
+
+  <div class="grid-2">
+    <div class="card cheap">
+      <h3>🏊 西湖呼吸治疗大会</h3>
+      <div class="meta"><span>📅 8/7-8</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="meta"><span class="price-tag price-low">早鸟800 / 现场1000</span><span class="tag green">Workshop 300-500</span></div>
+      <ul class="detail-list"><li>重症呼吸治疗、呼吸康复、气道管理、膈肌超声、EIT监测</li><li>⚠ 早鸟8/5截止</li></ul>
+      <a class="source-link" href="https://www.zjma.org/about/newsdetails/934.html" target="_blank">🔗 浙江省医学会通知</a>
+    </div>
+    <div class="card">
+      <h3>🦴 肌骨超声及PRP技术培训班</h3>
+      <div class="meta"><span>📅 8/15-16</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="meta"><span class="price-tag price-mid">2000元</span><span class="tag red">限40人</span></div>
+      <ul class="detail-list"><li>浙江省中医院钱塘院区</li><li>与康复年会时间重叠</li></ul>
+    </div>
+    <div class="card cheap">
+      <h3>🏙 首届长三角康复与护理论坛 ⭐推荐</h3>
+      <div class="meta"><span>📅 8/20-22</span><span class="city-tag city-sz">苏州</span></div>
+      <div class="meta"><span class="price-tag price-low">待确认</span><span class="tag green">康复设备展免费参观</span></div>
+      <ul class="detail-list"><li>🎯 高铁15分钟！脑机接口/神经康复/机器人/运动康复</li><li>同期第四届康复设备展</li></ul>
+      <a class="source-link" href="https://www.rehacare-c.com/news/info/772" target="_blank">🔗 论坛详情</a>
+    </div>
+    <div class="card cheap">
+      <h3>🧠 脑机接口前沿技术应用培训班 ⭐高性价比</h3>
+      <div class="meta"><span>📅 8/22-23</span><span class="city-tag city-nj">南京</span></div>
+      <div class="meta"><span class="price-tag price-low">600元</span><span class="tag green">超值</span></div>
+      <ul class="detail-list"><li>南京鼓楼医院 | 脑功能评估、神经调控、运动与认知康复</li></ul>
+      <a class="source-link" href="https://www.carm.org.cn/jypx/tzgg/art/2026/art_a1e5d88a913744a7bb8ddd16a4ed3852.html" target="_blank">🔗 官方通知</a>
+    </div>
+    <div class="card">
+      <h3>🗣 运动性言语-嗓音障碍高级培训班</h3>
+      <div class="meta"><span>📅 8/22-23</span><span class="city-tag city-sh">上海</span></div>
+      <div class="meta"><span class="price-tag price-mid">1200（早鸟1000）</span><span class="tag red">限60人</span></div>
+      <ul class="detail-list"><li>浦东光明中医医院 | 呼吸-发声-共鸣联动实操</li><li>⚠ 早鸟8/1截止</li></ul>
+      <a class="source-link" href="https://www.carm.org.cn/jypx/tzgg/art/2026/art_9fed8d814dd34038a5a7780b0508fad9.html" target="_blank">🔗 官方通知</a>
+    </div>
+    <div class="card">
+      <h3>🧘 第一期精神心理康复能力提升培训班</h3>
+      <div class="meta"><span>📅 8/1-3</span><span class="city-tag city-sh">上海</span></div>
+      <div class="meta"><span class="price-tag price-high">2800元</span></div>
+    </div>
+    <div class="card cheap">
+      <h3>👶 姑苏儿童呼吸论坛</h3>
+      <div class="meta"><span>📅 8/28-30</span><span class="city-tag city-sz">苏州</span></div>
+      <div class="meta"><span class="price-tag price-low">待确认</span><span class="tag blue">儿科康复</span></div>
+      <ul class="detail-list"><li>苏州高铁金科大酒店</li></ul>
+    </div>
+    <div class="card cheap">
+      <h3>🏘 适宜技术进社区学术交流会</h3>
+      <div class="meta"><span>📅 8月（待定）</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="meta"><span class="price-tag price-low">预计低价</span><span class="tag green">社区康复</span></div>
+    </div>
+    <div class="card">
+      <h3>🗣 言语康复适宜技术基层培训班</h3>
+      <div class="meta"><span>📅 8/8-9</span><span class="city-tag city-hz">浙江</span></div>
+      <div class="meta"><span class="price-tag price-low">面向基层</span><span class="tag blue">言语治疗</span></div>
+    </div>
+    <div class="card">
+      <h3>🆕 龙氏正骨复位学习班（杭州站）</h3>
+      <div class="meta"><span>📅 8/21-25</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="meta"><span class="price-tag price-high">¥6,999</span><span class="tag blue">沈彤教授</span></div>
+      <ul class="detail-list"><li>10天线上+5天2晚线下 | 龙氏治脊疗法国际认证</li></ul>
+    </div>
+    <div class="card">
+      <h3>🆕 协康会结构化教学法暨PEP-3评估员课程</h3>
+      <div class="meta"><span>📅 8/7-9</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="meta"><span class="price-tag price-mid">待确认</span><span class="tag blue">儿童康复</span></div>
+      <ul class="detail-list"><li>香港协康会主办 | 自闭症评估与结构化教学 | 📞 13902248540</li></ul>
+    </div>
+    <div class="card">
+      <h3>🆕 第一期血管外科疾病康复护理专科护士培训</h3>
+      <div class="meta"><span>📅 8/2-9/30</span><span class="city-tag city-sh">上海</span></div>
+      <div class="meta"><span class="price-tag price-mid">待确认</span><span class="tag orange">护理</span></div>
+      <ul class="detail-list"><li>中国康复医学会主办 | 血管外科康复护理专科</li></ul>
+    </div>
+    <div class="card">
+      <h3>🆕 社区康复专业委员会成立大会</h3>
+      <div class="meta"><span>📅 8月（待定）</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="meta"><span class="price-tag price-low">待确认</span><span class="tag green">新专委会</span></div>
+      <ul class="detail-list"><li>中国康复医学会社区康复专业委员会成立 | 值得关注后续活动</li></ul>
+    </div>
+    <div class="card cheap">
+      <h3>🆕 社区慢病康复实践能力提升培训班</h3>
+      <div class="meta"><span>📅 8/27-29</span><span class="city-tag city-other">长三角</span></div>
+      <div class="meta"><span class="price-tag price-low">待确认</span><span class="tag green">社区康复</span></div>
+      <ul class="detail-list"><li>中国社区卫生协会主办 | 面向社区全科医生和康复治疗师</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 4b. 8月新增 ==================== -->
+<div class="grid-2" style="margin-top:12px;">
+  <div class="card">
+    <h3>🆕 吞咽障碍病例展示（华东区选拔）</h3>
+    <div class="meta"><span>📅 8/21</span><span class="city-tag city-sz">苏州</span></div>
+    <div class="meta"><span class="price-tag price-low">可免费观摩</span><span class="tag blue">团队病例展示</span></div>
+    <ul class="detail-list"><li>江浙沪皖鲁赣六省一市团队参赛（医生+护士+治疗师）| 苏州万怡酒店</li></ul>
+  </div>
+  <div class="card">
+    <h3>🆕 老年护理、康复护理学术会议</h3>
+    <div class="meta"><span>📅 8/26-28</span><span class="city-tag city-nj">南京</span></div>
+    <div class="meta"><span class="price-tag price-low">注册缴费</span><span class="tag green">有继教学分</span></div>
+    <ul class="detail-list"><li>江苏省护理学会主办 | 可获得继续医学教育学分</li></ul>
+  </div>
+</div>
+
+<!-- ==================== 5. 9-11月 长三角活动 ==================== -->
+<section id="sept-nov">
+  <h2>🗓 2026年9月—11月 · 长三角重点活动</h2>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>🗣 言语康复专委会第六届学术年会</h3>
+      <div class="meta"><span>📅 9/3-6</span><span class="city-tag city-sh">上海</span></div>
+      <div class="meta"><span class="tag blue">言语康复</span><span class="tag purple">语言与健康</span></div>
+    </div>
+    <div class="card">
+      <h3>🧠 帕金森病与运动障碍康复学术年会</h3>
+      <div class="meta"><span>📅 9/4-5</span><span class="city-tag city-sh">上海</span></div>
+      <div class="meta"><span>📍 衡山北郊宾馆</span><span class="tag blue">神经康复</span></div>
+    </div>
+    <div class="card">
+      <h3>✋ 手功能康复专委会第二届学术年会</h3>
+      <div class="meta"><span>📅 9/11-13</span><span class="city-tag city-sh">上海</span></div>
+      <div class="meta"><span>📍 复旦大学附属华山医院</span><span class="tag blue">手功能</span></div>
+    </div>
+    <div class="card">
+      <h3>👶 苏祖斐儿童健康与发展学术论坛</h3>
+      <div class="meta"><span>📅 9/11-13</span><span class="city-tag city-sh">上海</span></div>
+      <div class="meta"><span>📍 建滔诺富特酒店</span><span class="tag purple">儿童康复</span></div>
+    </div>
+    <div class="card">
+      <h3>❤️ 心脏康复培训班（杭州）</h3>
+      <div class="meta"><span>📅 9/17-20</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="meta"><span class="tag blue">心肺康复</span><span class="tag green">实操培训</span></div>
+    </div>
+    <div class="card cheap">
+      <h3>🏥 第五届重症康复专科医师培训班</h3>
+      <div class="meta"><span>📅 9/21—12/31</span><span class="city-tag city-hz">浙江</span></div>
+      <div class="meta"><span class="price-tag price-low">长期系统</span><span class="tag blue">重症康复</span></div>
+    </div>
+    <div class="card cheap">
+      <h3>🏥 第五届重症康复专科护士培训班</h3>
+      <div class="meta"><span>📅 9/21—12/31</span><span class="city-tag city-hz">浙江</span></div>
+      <div class="meta"><span class="price-tag price-low">长期系统</span><span class="tag purple">护理方向</span></div>
+    </div>
+    <div class="card cheap">
+      <h3>🧠 基层认知障碍康复推广培训班</h3>
+      <div class="meta"><span>📅 9/12-13</span><span class="city-tag city-nb">宁波</span></div>
+      <div class="meta"><span class="price-tag price-low">1000元</span><span class="tag green">认知康复</span></div>
+    </div>
+    <div class="card">
+      <h3>🏛 非公立医疗机构协会康复年会</h3>
+      <div class="meta"><span>📅 10/22-25</span><span class="city-tag city-nj">南京</span></div>
+      <div class="meta"><span>📍 银城皇冠假日酒店</span><span class="tag orange">含病例大赛</span></div>
+      <ul class="detail-list"><li>同期举办"希望杯"康复病例大赛（10/23-24决赛）</li></ul>
+    </div>
+    <div class="card cheap">
+      <h3>🆕 家庭医生签约下的心脏康复技术社区培训班</h3>
+      <div class="meta"><span>📅 9/8-10</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="meta"><span class="price-tag price-low">待确认</span><span class="tag green">社区康复</span></div>
+      <ul class="detail-list"><li>中国社区卫生协会主办 | 面向社区全科医生和康复治疗师</li></ul>
+    </div>
+    <div class="card">
+      <h3>🆕 第一届全国关节粘连阶梯式无痛康复学习班</h3>
+      <div class="meta"><span>📅 9/11-13</span><span class="city-tag city-sh">上海</span></div>
+      <div class="meta"><span class="price-tag price-mid">待确认</span><span class="tag blue">骨科康复</span></div>
+      <ul class="detail-list"><li>同期第七届关节痛与僵硬无痛康复班 + 第二届姆瓦技术讲习班</li></ul>
+    </div>
+    <div class="card">
+      <h3>🆕 第二期康复管理培训班</h3>
+      <div class="meta"><span>📅 2026年下半年</span><span class="city-tag city-sh">上海</span></div>
+      <div class="meta"><span class="price-tag price-mid">待确认（首期¥3000）</span><span class="tag orange">管理</span></div>
+      <ul class="detail-list"><li>医康融合工作委员会主办 | 第一期已举办，第二期日期待公布</li></ul>
+    </div>
+    <div class="card">
+      <h3>💧 温泉水疗临床应用论坛暨技术培训班</h3>
+      <div class="meta"><span>📅 11/5-8</span><span class="city-tag city-other">金华</span></div>
+      <div class="meta"><span class="price-tag price-mid">论坛+培训3000</span><span class="price-tag price-low">仅论坛1000</span></div>
+      <ul class="detail-list"><li>浙江武义 | 早鸟价：论坛+培训2600 / 仅论坛800</li></ul>
+      <a class="source-link" href="https://www.carm.org.cn/kyxs/tzgg/art/2026/art_ab1075c4ac2549c7ab6f673e7d9de3c9.html" target="_blank">🔗 第一轮通知</a>
+    </div>
+    <div class="card urgent">
+      <h3>🏆 2026中国康复医学会综合学术年会 ⭐年度盛会</h3>
+      <div class="meta"><span>📅 11/27-29</span><span class="city-tag city-hz">杭州</span></div>
+      <div class="meta"><span class="price-tag price-mid">待公布</span><span class="tag orange">必关注</span></div>
+      <ul class="detail-list"><li>杭州国际博览中心 | 全国最大康复年会 + 产业博览会（400展位）</li></ul>
+      <a class="source-link" href="https://www.carm.org.cn/kyxs/tzgg/art/2025/art_32610d590889406a8650eda34fdb662d.html" target="_blank">🔗 第一轮通知</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 5b. 9-11月新增 ==================== -->
+<div class="grid-2" style="margin-top:12px;">
+  <div class="card">
+    <h3>🆕 第三期非侵入性脑机接口操作技术培训班</h3>
+    <div class="meta"><span>📅 9/11-13</span><span class="city-tag city-sh">上海</span></div>
+    <div class="meta"><span class="price-tag price-high">¥4,800-9,800</span><span class="tag red">L3仅限18人</span></div>
+    <ul class="detail-list"><li>复旦大学附属华山医院承办 | 分L1/L2/L3三级 | 学生半价 | 报名截止9/10</li></ul>
+  </div>
+</div>
+
+<!-- ==================== 6. 全年会议完整日历 ==================== -->
+<section id="all-year">
+  <h2>📋 2026年7月—12月 · 中国康复医学会各专委会学术会议完整日历</h2>
+  <p style="font-size:.84rem;color:var(--text2);margin-bottom:12px;">标⭐为在长三角城市举办 | 标💻为含线上 | 标💰后有价格</p>
+  <div style="overflow-x:auto;">
+    <table class="data">
+      <thead>
+        <tr><th>时间</th><th>地点</th><th>会议名称</th><th>方向</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>7/10-12</td><td><span class="city-tag city-sz">昆山</span></td><td>⭐ 居家康复专委会学术年会（含工作坊）💰1000元</td><td>居家康复</td></tr>
+        <tr><td>7/10-12</td><td><span class="city-tag city-sh">上海</span></td><td>⭐ 肿瘤康复专委会学术年会及换届</td><td>肿瘤康复</td></tr>
+        <tr><td>7/11</td><td><span class="city-tag city-sh">上海</span></td><td>⭐ 中枢传导通路与姿势控制(CPPC)临床应用培训班 💰1000元</td><td>物理治疗</td></tr>
+        <tr><td>7/18-19</td><td><span class="city-tag city-sh">上海</span></td><td>⭐ 第一期康复管理培训班 💰3000元</td><td>管理</td></tr>
+        <tr><td>7/24-26</td><td><span class="city-tag city-sh">上海</span></td><td>⭐🆕 社区双室联动下全专临床思维培训班</td><td>社区</td></tr>
+        <tr><td>7/31-8/2</td><td><span class="city-tag city-sh">上海</span></td><td>⭐ 光动力治疗与康复专委会第四届学术年会</td><td>光动力</td></tr>
+        <tr><td>8/2-9/30</td><td><span class="city-tag city-sh">上海</span></td><td>⭐🆕 第一期血管外科疾病康复护理专科护士培训</td><td>护理</td></tr>
+        <tr><td>8/7-9</td><td><span class="city-tag city-hz">杭州</span></td><td>⭐🆕 协康会结构化教学法+PEP-3评估员课程</td><td>儿童</td></tr>
+        <tr><td>8/5-8</td><td>西安</td><td>康复护理专委会学术年会（14个分论坛）</td><td>护理</td></tr>
+        <tr><td>8/7-8</td><td><span class="city-tag city-hz">杭州</span></td><td>⭐ 西湖呼吸治疗大会 💰800-1000元</td><td>心肺</td></tr>
+        <tr><td>8/13-16</td><td><span class="city-tag city-hz">杭州</span></td><td>⭐ 康复治疗专委会学术年会 💰1000-1200元</td><td>综合</td></tr>
+        <tr><td>8/15-16</td><td><span class="city-tag city-hz">杭州</span></td><td>⭐ 肌骨超声及PRP技术培训班 💰2000元</td><td>肌骨</td></tr>
+        <tr><td>8/20-22</td><td><span class="city-tag city-sz">苏州</span></td><td>⭐ 首届长三角康复与护理论坛 + 康复设备展</td><td>综合</td></tr>
+        <tr><td>8/21-23</td><td>西安</td><td>循证康复医学学术年会+Meta分析培训班 💰600-1000元</td><td>科研</td></tr>
+        <tr><td>8/21-25</td><td><span class="city-tag city-hz">杭州</span></td><td>⭐🆕 龙氏正骨复位学习班 💰6999元</td><td>肌骨</td></tr>
+        <tr><td>8/22-23</td><td><span class="city-tag city-nj">南京</span></td><td>⭐ 脑机接口前沿技术应用培训班 💰600元</td><td>神经</td></tr>
+        <tr><td>8/22-23</td><td><span class="city-tag city-sh">上海</span></td><td>⭐ 运动性言语-嗓音障碍高级培训班 💰1000-1200元</td><td>言语</td></tr>
+        <tr><td>8/28-30</td><td><span class="city-tag city-sz">苏州</span></td><td>⭐ 姑苏儿童呼吸论坛</td><td>儿科</td></tr>
+        <tr><td>8/28-30</td><td>福建</td><td>康复评定专委会学术年会</td><td>评定</td></tr>
+        <tr><td>9/3-6</td><td><span class="city-tag city-sh">上海</span></td><td>⭐ 言语康复专委会第六届学术年会</td><td>言语</td></tr>
+        <tr><td>9/4-5</td><td><span class="city-tag city-sh">上海</span></td><td>⭐ 帕金森病与运动障碍康复专委会年会</td><td>神经</td></tr>
+        <tr><td>9/11-13</td><td><span class="city-tag city-sh">上海</span></td><td>⭐ 手功能康复专委会第二届学术年会</td><td>手功能</td></tr>
+        <tr><td>9/11-13</td><td><span class="city-tag city-sh">上海</span></td><td>⭐ 苏祖斐儿童健康与发展学术论坛</td><td>儿科</td></tr>
+        <tr><td>9/12-13</td><td><span class="city-tag city-nb">宁波</span></td><td>⭐ 基层认知障碍康复推广培训班 💰1000元</td><td>认知</td></tr>
+        <tr><td>9/8-10</td><td><span class="city-tag city-hz">杭州</span></td><td>⭐🆕 家庭医生签约下心脏康复技术社区培训班</td><td>心肺</td></tr>
+        <tr><td>9/17-20</td><td><span class="city-tag city-hz">杭州</span></td><td>⭐ 心脏康复培训班</td><td>心肺</td></tr>
+        <tr><td>9/21-12/31</td><td><span class="city-tag city-hz">浙江</span></td><td>⭐ 第五届重症康复专科医师/护士培训班</td><td>重症</td></tr>
+        <tr><td>10/22-25</td><td><span class="city-tag city-nj">南京</span></td><td>⭐ 非公立医疗机构协会康复年会 + 希望杯病例大赛</td><td>综合</td></tr>
+        <tr><td>10/30-11/1</td><td><span class="city-tag city-sh">上海</span></td><td>⭐ 眩晕康复专委会学术年会</td><td>眩晕</td></tr>
+        <tr><td>11/5-8</td><td><span class="city-tag city-other">金华</span></td><td>⭐ 温泉水疗论坛+技术培训 💰800-3000元</td><td>水疗</td></tr>
+        <tr><td>11/27-29</td><td><span class="city-tag city-hz">杭州</span></td><td>⭐🏆 中国康复医学会综合学术年会+产业博览会</td><td>综合</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== 7. 进修机会 ==================== -->
+<section id="training">
+  <h2>🏥 长期进修机会（含低价/免费渠道）</h2>
+
+  <div class="card urgent">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>复旦大学附属华山医院 · 康复医学科 ⭐全国顶尖</h3>
+      <span class="city-tag city-sh">上海</span>
+    </div>
+    <div class="meta"><span>📅 每年4批：3/6/9/12月</span><span>⏱ 3/6/12个月</span></div>
+    <div class="meta"><span class="tag blue">神经康复</span><span class="tag blue">PT/OT/ST</span><span class="tag purple">脑机接口</span><span class="tag green">肉毒毒素</span></div>
+    <ul class="detail-list">
+      <li><strong>⚠ 9月批次约8月中旬截止报名</strong></li>
+      <li>方向：神康/重症/骨科/儿童/盆底/心肺 + 机器人/rTMS/步态分析/促醒</li>
+      <li>要求：康复医师/治疗师/护士，工作≥3年，二甲及以上</li>
+      <li>报名：<a href="https://jx.edu-huashan.com:18084/engage-index" target="_blank">jx.edu-huashan.com:18084/engage-index</a></li>
+      <li>咨询：沈老师 021-52887820</li>
+      <li>💡 进修期间可<strong>优惠或免费参加</strong>各类学习班和会议</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>上海市精神卫生中心 · 精神康复特色专科进修</h3>
+      <span class="city-tag city-sh">上海</span>
+    </div>
+    <div class="meta"><span>📅 每年2月、8月开班</span><span>⏱ 约6个月</span><span class="price-tag price-high">24000元/期</span></div>
+    <div class="meta"><span>📍 徐汇/闵行院区</span><span>📞 021-34773073</span></div>
+    <ul class="detail-list"><li>国家精神疾病医学中心 | 精神科/心理科医师</li></ul>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>🆕 上海交大医学院附属精神卫生中心 · 护士进修班</h3>
+      <span class="city-tag city-sh">上海</span>
+    </div>
+    <div class="meta"><span>📅 每期3个月</span><span>📍 宛平南路600号</span></div>
+    <ul class="detail-list"><li>含精神科康复护理和康复科观摩 | 📧 hulibu2512@163.com | 📞 021-34773702</li></ul>
+  </div>
+
+  <div class="card cheap">
+    <h3>🆕 上海爱学教育 · 产后康复师精英实战认证</h3>
+    <div class="meta"><span>📍 上海</span><span>📅 滚动开班</span><span>⏱ 约120学时</span></div>
+    <ul class="detail-list">
+      <li>2周面授+1周临床实习+2周线上进阶 | 三甲医院导师</li>
+      <li>盆底肌修复、腹直肌分离、产后疼痛管理、体态矫正</li>
+      <li>终身免费复训 | 📞 400-909-8252</li>
+    </ul>
+  </div>
+
+  <div class="card cheap">
+    <h3>🆕 东方启音儿童康复中心 · 家长培训班</h3>
+    <div class="meta"><span>📍 上海/南京/杭州多校区</span><span>📅 长期滚动开班</span></div>
+    <ul class="detail-list">
+      <li>STAR自闭症言语课程 / 口肌发音训练 / 启智认知与逻辑表达</li>
+      <li>面向自闭症、脑瘫、发育迟缓儿童家长 | 📞 400-968-9396</li>
+    </ul>
+  </div>
+
+  <div class="card cheap">
+    <h3>🏠 无锡本地进修基地汇总</h3>
+    <table class="data" style="margin-top:6px;">
+      <tr><th>医院</th><th>优势</th><th>建议</th></tr>
+      <tr><td>无锡市同仁康复医院</td><td>PT/OT/ST/水疗齐全，省级培训基地</td><td>直接联系康复科</td></tr>
+      <tr><td>无锡国济康复医院</td><td>梁溪区，院内活动多</td><td>📞 0510-83072588</td></tr>
+      <tr><td>无锡顾连医院</td><td>有市级专家授课资源</td><td>关注公众号</td></tr>
+    </table>
+  </div>
+
+  <div class="card cheap">
+    <h3>🏙 周边城市进修基地（高铁1小时内）</h3>
+    <table class="data" style="margin-top:6px;">
+      <tr><th>医院</th><th>城市</th><th>特色</th></tr>
+      <tr><td>南京鼓楼医院</td><td><span class="city-tag city-nj">南京</span></td><td>PT/OT/ST/吞咽/认知，国家住培基地</td></tr>
+      <tr><td>江苏省人民医院</td><td><span class="city-tag city-nj">南京</span></td><td>南医大附属，康复医学全国前列</td></tr>
+      <tr><td>江苏盛泽医院</td><td><span class="city-tag city-sz">苏州</span></td><td>PT/OT/ST/心肺，接受进修培养</td></tr>
+      <tr><td>常熟市第一人民医院</td><td><span class="city-tag city-sz">苏州</span></td><td>南医大教学基地，PT/OT/ST齐全</td></tr>
+      <tr><td>苏州永鼎医院</td><td><span class="city-tag city-sz">苏州</span></td><td>PT/OT/ST/认知/中医康复</td></tr>
+      <tr><td>浙江省人民医院</td><td><span class="city-tag city-hz">杭州</span></td><td>康复治疗年会承办方</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>🆕 上海市第七人民医院 · 康复临床医学中心进修</h3>
+      <span class="city-tag city-sh">上海</span>
+    </div>
+    <div class="meta"><span>📅 长期招生</span><span>⏱ 3/6/12个月</span><span>📍 上海浦东</span></div>
+    <ul class="detail-list">
+      <li>8大方向：神经/肌骨/心理/重症/心脏/小儿/烧伤/产后康复</li>
+      <li>医师1-3人/年，技师2-5人/年 | 📞 刘增雪 13248181617</li>
+    </ul>
+    <a class="source-link" href="https://www.hosno7.com/shsqyy/jxryzsgg/10580.jhtml" target="_blank">🔗 招生公告</a>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>🆕 上海市第七人民医院 · 重症康复病房进修</h3>
+      <span class="city-tag city-sh">上海</span>
+    </div>
+    <div class="meta"><span>📅 长期招生</span><span>⏱ 3/6/12个月</span><span>📍 上海浦东</span></div>
+    <ul class="detail-list">
+      <li>中西医结合重症康复：呼吸/神经康复/PT/针灸/中药</li>
+      <li>每期3-4人，本科及以上，2年以上经验 | 📞 袁老师 18801792052</li>
+    </ul>
+    <a class="source-link" href="https://www.hosno7.com/shsqyy/jxryzsgg/10575.jhtml" target="_blank">🔗 招生公告</a>
+  </div>
+
+  <div class="card cheap">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>🆕 上海市养志康复医院（阳光康复中心）进修</h3>
+      <span class="city-tag city-sh">上海</span>
+    </div>
+    <div class="meta"><span>📅 长期招生</span><span>⏱ 1-12个月灵活</span><span>📍 上海松江</span></div>
+    <ul class="detail-list">
+      <li>心肺重症/神经/儿童/中医/言语/作业/骨关节/物理治疗</li>
+      <li>通过医院招录系统在线申请，各方向时长灵活</li>
+    </ul>
+    <a class="source-link" href="https://yun.ccmtv.cn/admin.php/new_recruit/home/hospital.html?hosid=846" target="_blank">🔗 招录系统</a>
+  </div>
+
+  <div class="card cheap">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+      <h3>🆕 杭州市中医院 · 针灸康复科进修</h3>
+      <span class="city-tag city-hz">杭州</span>
+    </div>
+    <div class="meta"><span>📅 每月8人</span><span>📍 杭州</span></div>
+    <ul class="detail-list">
+      <li>特色：针刺+筋膜腹式呼吸治产后腹直肌分离、通督调神针法治盆底痛</li>
+      <li>专科及以上学历，1年以上临床经验</li>
+    </ul>
+    <a class="source-link" href="https://hztcm.cn/train/detail/id/10025.html" target="_blank">🔗 招生详情</a>
+  </div>
+</section>
+
+<!-- ==================== 8. 线上学习 ==================== -->
+<section id="online">
+  <h2>💻 线上学习 & 低价考证课程</h2>
+  <div class="grid-2">
+    <div class="card online free">
+      <h3>📱 华夏云课堂 — 儿童康复首选</h3>
+      <div class="meta"><span class="price-tag price-free">免费</span><span class="tag teal">中国残疾人康复协会</span></div>
+      <ul class="detail-list"><li>孤独症、智力障碍、视力残疾、肢体残疾等系统课程</li><li>免费视频课程 + 免费专题微课 + 免费工具包</li><li>安卓/iOS App可下载</li></ul>
+    </div>
+    <div class="card online free">
+      <h3>📺 B站 — 最大免费课库</h3>
+      <div class="meta"><span class="price-tag price-free">完全免费</span></div>
+      <ul class="detail-list"><li>康复治疗士/师/中级/副高 全套备考视频</li><li>实操技术演示（腱鞘炎康复、运动康复等）</li><li>搜索"2026康复治疗"即可</li></ul>
+    </div>
+    <div class="card online free">
+      <h3>📱 华励康复教育 App</h3>
+      <div class="meta"><span class="price-tag price-free">免费</span><span class="tag teal">10万+用户</span></div>
+      <ul class="detail-list"><li>免费线上题库 + 免费视频课程</li><li>康复职考备考品牌</li></ul>
+    </div>
+    <div class="card online free">
+      <h3>🌐 Coursera</h3>
+      <div class="meta"><span class="price-tag price-free">免费旁听</span></div>
+      <ul class="detail-list"><li>物理治疗/解剖学/生物力学等国际课程</li><li>选择"旁听(Audit)"=完全免费</li></ul>
+    </div>
+    <div class="card online cheap">
+      <h3>🎓 知行者在线（zxz365.com）</h3>
+      <div class="meta"><span class="price-tag price-low">部分免费</span><span class="tag blue">职考培训</span></div>
+      <ul class="detail-list"><li>381-康复医学治疗技术中级考点精讲班</li><li>运动疗法前几讲免费试听，共37讲</li><li>李晓溪、李永杰主讲（五星推荐）</li></ul>
+    </div>
+    <div class="card online cheap">
+      <h3>🎓 无锡来学教育</h3>
+      <div class="meta"><span>📍 新吴区天山路8号</span><span class="price-tag price-mid">¥2980起</span></div>
+      <ul class="detail-list"><li>康复治疗技术士/师/中级/副高/正高 各级别课程</li><li>考点精讲+题库 | wxlaixue.com</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 8b. 新增线上课程 ==================== -->
+<section id="online-new" style="margin-top:12px;">
+  <h2>💻 新增线上课程 · 今日发现</h2>
+  <div class="grid-2">
+    <div class="card online free">
+      <h3>🆕 学银在线《康复技能综合实践》</h3>
+      <div class="meta"><span class="price-tag price-free">免费</span><span class="tag purple">四川护理职业学院</span></div>
+      <ul class="detail-list"><li>康复评定+PT/OT/ST综合技能实践</li><li>可关注下一轮开课</li></ul>
+    </div>
+    <div class="card online free">
+      <h3>🆕 中国大学MOOC《康复评定学》</h3>
+      <div class="meta"><span class="price-tag price-free">免费</span><span class="tag purple">国家精品课程</span></div>
+      <ul class="detail-list"><li>系统学习康复评定理论和方法</li><li>爱课程平台搜索</li></ul>
+    </div>
+    <div class="card online free">
+      <h3>🆕 传统康复方法学（智慧教育平台）</h3>
+      <div class="meta"><span class="price-tag price-free">免费</span><span class="tag purple">福建中医药大学</span></div>
+      <ul class="detail-list"><li>针灸、推拿、拔罐、刮痧等中医传统康复</li><li>higher.smartedu.cn</li></ul>
+    </div>
+    <div class="card online free">
+      <h3>🆕 学堂在线《康复医学》（华中科技大学）</h3>
+      <div class="meta"><span class="price-tag price-free">免费</span><span class="tag purple">名校课程</span></div>
+      <ul class="detail-list"><li>系统康复医学，PT/OT/ST全模块</li><li>Class Central/学堂在线免费学习</li></ul>
+    </div>
+    <div class="card online cheap">
+      <h3>🆕 北大康复理疗指导研修班</h3>
+      <div class="meta"><span>📅 10月/12月排期</span><span class="price-tag price-mid">需缴培训费</span></div>
+      <ul class="detail-list"><li>北大继续教育结业证书+岗位技能证书</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 9. 继续教育学分 ==================== -->
+<section id="credit">
+  <h2>📜 继续教育学分 · 江苏/浙江政策速查</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>🇨🇳 江苏省</h3>
+      <table class="data" style="margin-top:6px;">
+        <tr><td>总学分</td><td><strong>25学分/年</strong></td></tr>
+        <tr><td>Ⅰ类（国家级/省级）</td><td>≥8学分</td></tr>
+        <tr><td>Ⅱ类（市级/院内/线上）</td><td>≤17学分</td></tr>
+        <tr><td>补学截止</td><td>2026.12.30</td></tr>
+        <tr><td>特殊</td><td>基层医护人员可减免2学分</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>🇨🇳 浙江省</h3>
+      <table class="data" style="margin-top:6px;">
+        <tr><td>总学分</td><td><strong>25学分/年</strong></td></tr>
+        <tr><td>Ⅰ类（国家级/省级）</td><td>≥9学分</td></tr>
+        <tr><td>Ⅱ类（市级/院内/线上）</td><td>≤16学分</td></tr>
+        <tr><td>补学截止</td><td>2026.12.25</td></tr>
+        <tr><td>特殊</td><td>中医药类学分≥3分</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px;">
+    <h3>💡 学分获取小贴士</h3>
+    <ul class="detail-list">
+      <li><strong>Ⅰ类学分</strong>：参加上面列出的各类国家级/省级学术年会和培训班（大部分标注了价格的活动都授予Ⅰ类学分）</li>
+      <li><strong>Ⅱ类学分</strong>：线上课程（华夏云课堂/华励等）、院内讲座、病例讨论、自学均可获取</li>
+      <li>跨省学分需提交纸质证明材料审核认定</li>
+      <li>💰 <strong>性价比之选</strong>：南京脑机接口培训班600元、宁波认知障碍培训班1000元——既学技术又拿学分</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== 10. 价格筛选速查 ==================== -->
+<section>
+  <h2>💰 按预算快速筛选（长三角活动）</h2>
+  <div class="grid-3">
+    <div class="card free">
+      <h3>🆓 免费</h3>
+      <ul class="detail-list">
+        <li>华夏云课堂App</li>
+        <li>B站康复课程</li>
+        <li>华励康复教育App</li>
+        <li>Coursera旁听</li>
+        <li>苏州康复设备展参观</li>
+        <li>无锡本地医院义诊/讲座</li>
+        <li>知行者在线部分课程</li>
+      </ul>
+    </div>
+    <div class="card cheap">
+      <h3>💙 ≤1000元</h3>
+      <ul class="detail-list">
+        <li>脑机接口培训班 600元（南京，8月）</li>
+        <li>西湖呼吸大会 早鸟800元（杭州，8月）</li>
+        <li>温泉水疗论坛 仅论坛800-1000元（金华，11月）</li>
+        <li>基层认知障碍培训班 1000元（宁波，9月）</li>
+        <li>CPPC培训班 1000元（上海，7月）</li>
+        <li>质控研讨会 400-600元（南京，7月）</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>💛 1000-3000元</h3>
+      <ul class="detail-list">
+        <li>康复治疗学术年会 1000-1200元（杭州，8月）</li>
+        <li>言语-嗓音培训班 1000-1200元（上海，8月）</li>
+        <li>肌骨超声培训班 2000元（杭州，8月）</li>
+        <li>精神心理培训班 2800元（上海，8月）</li>
+        <li>综合学术年会 待公布（杭州，11月）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 11. 信息渠道 ==================== -->
+<section id="links">
+  <h2>🔖 持续关注的信息渠道（建议每天刷一遍）</h2>
+  <div class="card">
+    <ul class="detail-list" style="font-size:.88rem;line-height:2;">
+      <li>🏛 <strong>中国康复医学会·培训通知</strong> — <a href="https://www.carm.org.cn/jypx/tzgg/" target="_blank">carm.org.cn/jypx/tzgg/</a> ← 最重要的来源</li>
+      <li>🏛 <strong>中国康复医学会·学术会议</strong> — <a href="https://www.carm.org.cn/kyxs/tzgg/" target="_blank">carm.org.cn/kyxs/tzgg/</a></li>
+      <li>🏛 <strong>学术会议网·康复医学会专区</strong> — <a href="https://www.sciconf.cn/cn/index/439_" target="_blank">sciconf.cn/cn/index/439_</a></li>
+      <li>🏛 <strong>江苏省康复医学会</strong> — 关注微信公众号</li>
+      <li>🏛 <strong>浙江省医学会</strong> — <a href="https://www.zjma.org/" target="_blank">zjma.org</a></li>
+      <li>🏛 <strong>丁香园会议</strong> — <a href="https://meeting.dxy.cn/" target="_blank">meeting.dxy.cn</a></li>
+      <li>🏛 <strong>华励康复教育</strong> — AppStore/应用市场搜索下载</li>
+      <li>🏛 <strong>华夏云课堂</strong> — AppStore/应用市场搜索下载</li>
+      <li>🏛 <strong>华山医院进修报名</strong> — <a href="https://jx.edu-huashan.com:18084/engage-index" target="_blank">jx.edu-huashan.com</a></li>
+      <li>🏛 <strong>B站</strong> — 搜索"2026康复治疗"</li>
+      <li>🏛 <strong>中国社区卫生协会</strong> — <a href="https://www.chs.org.cn/" target="_blank">chs.org.cn</a></li>
+      <li>🏛 <strong>中国非公立医疗机构协会</strong> — <a href="https://www.cnmia.org/" target="_blank">cnmia.org</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ==================== 交通 ==================== -->
+<section>
+  <h2>🚄 各城市高铁参考（无锡出发）</h2>
+  <div class="card">
+    <table class="data">
+      <tr><th>城市</th><th>高铁时间</th><th>适合模式</th><th>近期活动数量</th></tr>
+      <tr><td>🏠 无锡</td><td>—</td><td>本地培训/进修首选</td><td>3+基地</td></tr>
+      <tr><td>🏙 苏州</td><td>≈15分钟</td><td>当日往返最方便 ⭐</td><td>3场</td></tr>
+      <tr><td>🏙 常州</td><td>≈15分钟</td><td>当日往返最方便 ⭐</td><td>关注中</td></tr>
+      <tr><td>🏙 上海</td><td>≈30-50分钟</td><td>当日往返方便 ⭐</td><td>10+场</td></tr>
+      <tr><td>🏙 南京</td><td>≈1小时</td><td>当日往返可行</td><td>5+场</td></tr>
+      <tr><td>🏙 南通</td><td>≈1小时</td><td>当日往返可行</td><td>关注中</td></tr>
+      <tr><td>🏙 杭州</td><td>≈1.5小时</td><td>当日往返略赶</td><td>8+场</td></tr>
+      <tr><td>🏙 宁波</td><td>≈2.5小时</td><td>建议住宿</td><td>1场</td></tr>
+      <tr><td>🏙 金华</td><td>≈2.5小时</td><td>建议住宿</td><td>1场</td></tr>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <p>📋 本页面每日 8:57 自动搜索更新 | 数据来源：中国康复医学会官网、各省级医学会、医院官方公告、学术会议平台等</p>
+  <p>💡 价格仅供参考，以官方最新通知为准 | 名额有限，建议尽早报名 | 需要筛选特定方向请随时说</p>
+</footer>
+
+</div>
+
+<!-- ===== 返回顶部 ===== -->
+<button class="back-top" id="backTop" title="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ====== 1. 动态倒计时 ======
+(function(){
+  const TODAY = new Date('2026-08-07');
+  const deadlines = [
+    { date:'2026-08-07', name:'协康会PEP-3评估员课程 — <b>今日开课！</b>', city:'杭州', tag:'today' },
+    { date:'2026-08-10', name:'肌骨超声及PRP技术培训班 缴费截止', city:'杭州', tag:'warn' },
+    { date:'2026-08-13', name:'康复治疗专委会学术年会 开幕', city:'杭州', tag:'warn' },
+    { date:'2026-08-15', name:'华山医院康复科 9月进修批次报名截止（预估）', city:'上海', tag:'warn' },
+    { date:'2026-08-21', name:'龙氏正骨复位学习班 — ¥6,999', city:'杭州', tag:'safe' },
+    { date:'2026-08-21', name:'吞咽障碍病例展示（华东区选拔）', city:'苏州', tag:'safe' },
+    { date:'2026-08-22', name:'脑机接口前沿技术应用培训班 — ¥600', city:'南京', tag:'safe' },
+    { date:'2026-09-10', name:'第三期非侵入性脑机接口培训 报名截止', city:'上海', tag:'safe' },
+    { date:'2026-09-11', name:'手功能康复专委会第二届学术年会', city:'上海', tag:'safe' },
+  ];
+
+  // Sort by date
+  deadlines.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  const container = document.getElementById('deadline-list');
+  if(!container) return;
+
+  const now = TODAY.getTime();
+  let shown = 0;
+
+  deadlines.forEach(d => {
+    const dDate = new Date(d.date);
+    const diffDays = Math.ceil((dDate - now) / (1000*60*60*24));
+
+    let cls = 'safe', label = diffDays + '天后';
+    if(diffDays < 0) { cls = 'expired'; label = '已截止'; }
+    else if(diffDays === 0) { cls = 'today'; label = '今天!'; }
+    else if(diffDays <= 2) { cls = 'urgent'; label = diffDays === 1 ? '明天!' : diffDays+'天'; }
+    else if(diffDays <= 7) { cls = 'warn'; label = diffDays+'天后'; }
+
+    // Skip expired items older than 3 days
+    if(diffDays < -3) return;
+
+    const cityCls = {
+      '上海':'city-sh','南京':'city-nj','杭州':'city-hz','苏州':'city-sz','无锡':'city-wx','宁波':'city-nb'
+    }[d.city] || 'city-other';
+
+    const item = document.createElement('div');
+    item.className = 'deadline-item' + (diffDays < 0 ? ' expired-dl' : '');
+    item.innerHTML = `
+      <span class="dl-date">${d.date.slice(5)}</span>
+      <span class="dl-name">${d.name}</span>
+      <span class="city-tag ${cityCls}">${d.city}</span>
+      <span class="countdown ${cls} dl-countdown">${label}</span>
+    `;
+    container.appendChild(item);
+    shown++;
+  });
+
+  // If no items, show message
+  if(shown === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:12px;color:#64748b;">暂无临近截止提醒，请定期关注上方活动列表</div>';
+  }
+})();
+
+// ====== 2. 城市 + 价位筛选 ======
+(function(){
+  let activeCity = 'all', activePrice = 'all';
+
+  document.querySelectorAll('.filter-bar .f-btn').forEach(btn => {
+    btn.addEventListener('click', function(){
+      const city = this.dataset.city;
+      const price = this.dataset.price;
+
+      // Toggle city filter
+      if(city !== undefined){
+        document.querySelectorAll('.filter-bar [data-city]').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        activeCity = city;
+      }
+      // Toggle price filter
+      if(price !== undefined){
+        document.querySelectorAll('.filter-bar [data-price]').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        activePrice = price;
+      }
+
+      applyFilters();
+    });
+  });
+
+  function applyFilters(){
+    const cards = document.querySelectorAll('.card');
+    let visible = 0, total = 0;
+
+    cards.forEach(card => {
+      // Only filter cards inside main content sections, not the 今日新增
+      if(card.closest('#today-new')) return;
+
+      total++;
+      let show = true;
+      const cardHTML = card.innerHTML;
+      const cardOuter = card.outerHTML;
+
+      // City filter
+      if(activeCity !== 'all'){
+        const cityMap = {sh:'上海',nj:'南京',hz:'杭州',sz:'苏州',wx:'无锡',nb:'宁波',jh:'金华'};
+        const targetCity = cityMap[activeCity];
+        if(targetCity && !cardOuter.includes(targetCity)){
+          // More flexible matching - check for city tags
+          if(!cardOuter.includes('city-'+activeCity)) show = false;
+        }
+      }
+
+      // Price filter
+      if(activePrice !== 'all'){
+        const hasFree = cardOuter.includes('price-free') || cardOuter.includes('免费');
+        const hasLow = cardOuter.includes('price-low') || /[≤<]?\s*1000/.test(cardOuter) || /[¥￥]600/.test(cardOuter) || /[¥￥]800/.test(cardOuter);
+        const hasMid = cardOuter.includes('price-mid');
+        const hasHigh = cardOuter.includes('price-high') || /[¥￥]\d{4,}/.test(cardOuter);
+
+        if(activePrice === 'free' && !hasFree) show = false;
+        else if(activePrice === 'low' && !hasLow && !hasFree) show = false;
+        else if(activePrice === 'mid' && !hasMid) show = false;
+        else if(activePrice === 'high' && !hasHigh) show = false;
+      }
+
+      if(show){ card.classList.remove('hidden'); visible++; }
+      else { card.classList.add('hidden'); }
+    });
+
+    // Update counter
+    const counter = document.getElementById('filter-count');
+    if(counter) counter.textContent = visible+'/'+total+' 个活动';
+  }
+
+  // Run once to init counter
+  applyFilters();
+})();
+
+// ====== 3. 搜索功能 ======
+function searchEvents(query){
+  const q = query.toLowerCase().trim();
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    if(card.closest('#today-new')) return;
+    if(!q){ card.classList.remove('hidden'); return; }
+    const text = (card.textContent || '').toLowerCase();
+    card.classList.toggle('hidden', !text.includes(q));
+  });
+  // Update counter
+  const visible = document.querySelectorAll('.card:not(.hidden):not(#today-new .card)').length;
+  const total = document.querySelectorAll('.card:not(#today-new .card)').length;
+  const counter = document.getElementById('filter-count');
+  if(counter) counter.textContent = visible+'/'+total+' 个活动';
+}
+
+// ====== 4. 返回顶部按钮 ======
+(function(){
+  const btn = document.getElementById('backTop');
+  if(!btn) return;
+  window.addEventListener('scroll', function(){
+    btn.classList.toggle('visible', window.scrollY > 400);
+  });
+})();
+
+// ====== 5. 统计卡片点击筛选 ======
+(function(){
+  document.querySelectorAll('.summary-bar .stat').forEach(stat => {
+    stat.addEventListener('click', function(){
+      const filter = this.dataset.filter;
+      if(filter === 'free'){
+        document.querySelectorAll('.filter-bar [data-price]').forEach(b => b.classList.remove('active'));
+        const freeBtn = document.querySelector('.filter-bar [data-price="free"]');
+        if(freeBtn){ freeBtn.classList.add('active'); freeBtn.click(); }
+      }
+      if(filter === 'training'){
+        document.getElementById('training')?.scrollIntoView({behavior:'smooth'});
+      }
+    });
+  });
+})();
+
+// ====== 6. 折叠长章节 ======
+(function(){
+  document.querySelectorAll('section h2').forEach(h2 => {
+    h2.style.cursor = 'pointer';
+    h2.addEventListener('click', function(){
+      const section = this.parentElement;
+      const content = section.querySelector('.grid-2, .grid-3, .card:not(:first-child), table.data');
+      // Toggle only child elements, not the h2 itself
+      let next = this.nextElementSibling;
+      while(next){
+        const display = next.style.display === 'none' ? '' : 'none';
+        next.style.display = display;
+        next = next.nextElementSibling;
+      }
+    });
+  });
+})();
+
+// ====== 7. 自动标记今日活动 ======
+(function(){
+  const today = '8/7';
+  document.querySelectorAll('.card .meta span').forEach(span => {
+    if(span.textContent.includes(today)){
+      const card = span.closest('.card');
+      if(card && !card.querySelector('.today-badge')){
+        const badge = document.createElement('span');
+        badge.className = 'countdown today';
+        badge.textContent = '今天';
+        badge.style.marginLeft = '6px';
+        const h3 = card.querySelector('h3');
+        if(h3) h3.appendChild(badge);
+      }
+    }
+  });
+})();
+
+console.log('✅ 康复培训信息面板已就绪 | 城市筛选 · 价格筛选 · 关键词搜索 · 动态倒计时 · 返回顶部');
+</script>
+
+</body>
+</html>
